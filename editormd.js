@@ -2765,7 +2765,11 @@
             this.search("replaceAll");
             
             return this;
-        }
+        },
+
+        loadScript : function (fileName, callback, into) {
+            editormd.loadScript(fileName, callback, into);
+        },
     };
     
     editormd.fn.init.prototype = editormd.fn; 
@@ -3365,7 +3369,7 @@
 
     // Emoji graphics files url path
     editormd.emoji     = {
-        path  : "http://www.emoji-cheat-sheet.com/graphics/emojis/",
+        path  : "https://www.webpagefx.com/tools/emoji-cheat-sheet/graphics/emojis/",
         ext   : ".png"
     };
 

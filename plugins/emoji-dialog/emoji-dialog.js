@@ -64,6 +64,9 @@
 				}
 			}
 		};
+		
+		var first = 1;
+		var lazyloadClass = 'lazyload';
 
 		exports.fn.emojiDialog = function() {
 			var _this       = this;
@@ -74,8 +77,8 @@
             {
                 alert("settings.emoji == false");
                 return ;
-            }
-            
+			}
+
 			var path        = settings.pluginPath + pluginName + "/";
 			var editor      = this.editor;
 			var cursor      = cm.getCursor();
@@ -139,15 +142,16 @@
 				});
 			}
 			
-			var category = ["Github emoji", "Twemoji", "Font awesome", "Editor.md logo"];
+			var category = ["Github emoji", "Twemoji", "Font awesome"];
+			var categoryLength = category.length;
 			var tab      = dialog.find("." + classPrefix + "tab");
 
 			if (tab.html() === "") 
 			{
 				var head = "<ul class=\"" + classPrefix + "tab-head\">";
 
-				for (var i = 0; i<4; i++) {
-					var active = (i === 0) ? " class=\"active\"" : "";
+				for (var i = 0; i<categoryLength; i++) {
+					var active = (i === emojiTabIndex) ? " class=\"active\"" : "";
 					head += "<li" + active + "><a href=\"javascript:;\">" + category[i] + "</a></li>";
 				}
 
@@ -157,9 +161,9 @@
 
 				var container = "<div class=\"" + classPrefix + "tab-container\">";
 
-				for (var x = 0; x < 4; x++) 
+				for (var x = 0; x < categoryLength; x++) 
                 {
-					var display = (x === 0) ? "" : "display:none;";
+					var display = (x === emojiTabIndex) ? "" : "display:none;";
 					container += "<div class=\"" + classPrefix + "tab-box\" style=\"height: 260px;overflow: hidden;overflow-y: auto;" + display + "\"></div>";
 				}
 
@@ -184,7 +188,7 @@
                 var pagination = function(data, type) {
                     var rowNumber = (type === "editormd-logo") ? "5" : 20;
                     var pageTotal = Math.ceil(data.length / rowNumber);
-                    var table     = "<div class=\"" + classPrefix + "grid-table\">";
+					var table     = "<div class=\"" + classPrefix + "grid-table\">";
 
                     for (var i = 0; i < pageTotal; i++)
                     {
@@ -205,24 +209,24 @@
                                     src     = (src === "moon") ? "waxing_gibbous_moon" : src;
                                     
                                     src     = exports.emoji.path + src + exports.emoji.ext;
-                                    img     = "<img src=\"" + src + "\" width=\"24\" class=\"emoji\" title=\"&#58;" + emoji + "&#58;\" alt=\"&#58;" + emoji + "&#58;\" />";
+                                    img     = "<img data-original=\"" + src + "\" width=\"24\" class=\"" + lazyloadClass + " emoji\" title=\"&#58;" + emoji + "&#58;\" alt=\"&#58;" + emoji + "&#58;\" />";
                                     row += "<a href=\"javascript:;\" value=\":" + emoji + ":\" title=\":" + emoji + ":\" class=\"" + classPrefix + "emoji-btn\">" + img + "</a>";
                                 }
                                 else if (type === "twemoji")
                                 {
                                     var twemojiSrc = exports.twemoji.path + emoji + exports.twemoji.ext;
-                                    img = "<img src=\"" + twemojiSrc + "\" width=\"24\" title=\"twemoji-" + emoji + "\" alt=\"twemoji-" + emoji + "\" class=\"emoji twemoji\" />";
+                                    img = "<img data-original=\"" + twemojiSrc + "\" width=\"24\" title=\"twemoji-" + emoji + "\" alt=\"twemoji-" + emoji + "\" class=\"" + lazyloadClass + " emoji twemoji\" />";
                                     row += "<a href=\"javascript:;\" value=\":tw-" + emoji + ":\" title=\":tw-" + emoji + ":\" class=\"" + classPrefix + "emoji-btn\">" + img + "</a>";
                                 }
                                 else if (type === "font-awesome")
                                 {
                                     icon = "<i class=\"fa fa-" + emoji + " fa-emoji\" title=\"" + emoji + "\"></i>";
-                                    row += "<a href=\"javascript:;\" value=\":fa-" + emoji + ":\" title=\":fa-" + emoji + ":\" class=\"" + classPrefix + "emoji-btn\">" + icon + "</a>";
+                                    row += "<a href=\"javascript:;\" value=\":fa-" + emoji + ":\" title=\":fa-" + emoji + ":\" class=\"" + lazyloadClass + " " + classPrefix + "emoji-btn\">" + icon + "</a>";
                                 }
                                 else if (type === "editormd-logo")
                                 {
                                     icon = "<i class=\"" + emoji + "\" title=\"Editor.md logo (" + emoji + ")\"></i>";
-                                    row += "<a href=\"javascript:;\" value=\":" + emoji + ":\" title=\":" + emoji + ":\" style=\"width:20%;\" class=\"" + classPrefix + "emoji-btn\">" + icon + "</a>";
+                                    row += "<a href=\"javascript:;\" value=\":" + emoji + ":\" title=\":" + emoji + ":\" style=\"width:20%;\" class=\"" + lazyloadClass + " " + classPrefix + "emoji-btn\">" + icon + "</a>";
                                 }
                             }
                             else
@@ -236,7 +240,7 @@
                         table += row;
                     }
 
-                    table += "</div>";
+					table += "</div>";
                     
                     return table;
                 };
@@ -287,6 +291,23 @@
 				drawTable();
 			}
 
+			function loadImg() {
+				$("img." + lazyloadClass).lazyload({
+					placeholder: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Loading.gif',
+					effect: "fadeIn",
+					container: dialog.find('.' + classPrefix + "tab-box:visible"),
+					threshold: 50,
+				});
+			}
+			
+			if (first) {
+				_this.__proto__.loadScript('https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min', function () {
+					loadImg();
+				}, 1);
+			} else {
+				loadImg();
+			}
+
 			tab.find("li").bind(exports.mouseOrTouch("click", "touchend"), function() {
 				var $this     = $(this);
 				emojiTabIndex = $this.index();
@@ -294,7 +315,10 @@
 				$this.addClass("active").siblings().removeClass("active");
 				tabBoxs.eq(emojiTabIndex).show().siblings().hide();
 				drawTable();
+				loadImg();
 			});
+
+			first = 0;
 		};
 
 	};
