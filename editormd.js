@@ -15,7 +15,7 @@
     
 	// CommonJS/Node.js
 	if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
-    { 
+    {
         module.exports = factory;
     }
 	else if (typeof define === "function")  // AMD/CMD/Sea.js
@@ -30,7 +30,7 @@
         }
 	} 
 	else
-	{ 
+	{
         window.editormd = factory();
 	}
     
@@ -38,7 +38,7 @@
 
     /* Require.js assignment replace */
     
-    "use strict";
+    // "use strict";
     
     var $ = (typeof (jQuery) !== "undefined") ? jQuery : Zepto;
 
@@ -4332,7 +4332,8 @@
         $(window).resize(dialogPosition);
 
         dialog.children("." + classPrefix + "dialog-close").bind(mouseOrTouch("click", "touchend"), function() {
-            dialog.hide().lockScreen(false).hideMask();
+            // dialog.hide().lockScreen(false).hideMask();
+            dialog.hidden();
         });
 
         if (typeof options.buttons === "object")
@@ -4345,8 +4346,21 @@
                 var btnClassName = classPrefix + key + "-btn";
 
                 footer.append("<button class=\"" + classPrefix + "btn " + btnClassName + "\">" + btn[0] + "</button>");
-                btn[1] = $.proxy(btn[1], dialog);
-                footer.children("." + btnClassName).bind(mouseOrTouch("click", "touchend"), btn[1]);
+
+                function getFun(fun, key) {
+                    function handle() {
+                        if (key == 'cancel') {
+                            dialog.hidden();
+                        }
+                        fun = $.proxy(fun, dialog);
+                        fun();
+                    }
+
+                    return handle;
+                }
+
+                // btn[1] = $.proxy(btn[1], dialog);
+                footer.children("." + btnClassName).bind(mouseOrTouch("click", "touchend"), getFun(btn[1], key));
             }
         }
 
@@ -4452,6 +4466,36 @@
         }
 
         editormd.dialogZindex += 2;
+
+        /**
+         * 对话框按esc隐藏
+         * 
+         * @author GHBJayce
+         * @date 2018-9-16
+         */
+        $(document).on('keydown', function (e) {
+            switch (e.keyCode) {
+                case 27:
+                    dialog.hidden();
+                    break;
+            }
+        });
+
+        dialog.hidden = function () {
+            dialog.hide().hideMask().lockScreen(false).remove();
+            $($this.cm.display.wrapper).find('textarea').focus();
+        };
+
+        $($this.cm.display.wrapper).find('textarea').blur();
+
+        // 聚焦对话框内的第一个输入框
+        var inputFirst = dialog.find('input:first');
+        if (inputFirst.length > 0) {
+            inputFirst.focus();
+            var val = inputFirst.val();
+            inputFirst.val('');
+            inputFirst.val(val);
+        }
 
         return dialog;
     };
