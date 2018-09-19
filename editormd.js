@@ -4490,8 +4490,6 @@
             $($this.cm.display.wrapper).find('textarea').focus();
         };
 
-        $($this.cm.display.wrapper).find('textarea').blur();
-
         // 聚焦对话框内的第一个输入框
         var inputFirst = dialog.find('input:first');
         if (inputFirst.length > 0) {
@@ -4499,6 +4497,10 @@
             var val = inputFirst.val();
             inputFirst.val('');
             inputFirst.val(val);
+        } else {
+            setTimeout(function () {
+                $($this.cm.display.wrapper).find('textarea').blur();
+            }, 100);
         }
 
         return dialog;
