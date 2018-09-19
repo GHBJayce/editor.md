@@ -256,15 +256,15 @@
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  -webkit-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -webkit-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
   /* Webkit browsers */
-  -moz-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -moz-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
   /* Firefox */
-  -ms-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -ms-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
   /* IE9 */
-  -o-box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  -o-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
   /* Opera(Old) */
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 1px 3px rgba(26,26,26,0.3);
   /* IE9+, News */
   background: #fff;
   font-size: 14px;

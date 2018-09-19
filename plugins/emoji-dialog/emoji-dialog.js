@@ -11,176 +11,175 @@
 
 (function() {
 
-	var factory = function (exports) {
+    var factory = function (exports) {
 
-		var $             = jQuery;
-		var pluginName    = "emoji-dialog";
-		var emojiTabIndex = 0;
-		var emojiData     = [];
+        var $             = jQuery;
+        var pluginName    = "emoji-dialog";
+        var emojiTabIndex = 0;
+        var emojiData     = [];
         var selecteds     = [];
 
-		var logoPrefix    = "editormd-logo";
-		var logos         = [
-			logoPrefix,
-			logoPrefix + "-1x",
-			logoPrefix + "-2x",
-			logoPrefix + "-3x",
-			logoPrefix + "-4x",
-			logoPrefix + "-5x",
-			logoPrefix + "-6x",
-			logoPrefix + "-7x",
-			logoPrefix + "-8x"
-		];
+        var logoPrefix    = "editormd-logo";
+        var logos         = [
+            logoPrefix,
+            logoPrefix + "-1x",
+            logoPrefix + "-2x",
+            logoPrefix + "-3x",
+            logoPrefix + "-4x",
+            logoPrefix + "-5x",
+            logoPrefix + "-6x",
+            logoPrefix + "-7x",
+            logoPrefix + "-8x"
+        ];
 
-		var langs = {
-			"zh-cn" : {
-				toolbar : {
-					emoji : "Emoji 表情"
-				},
-				dialog : {
-					emoji : {
-						title : "Emoji 表情"
-					}
-				}
-			},
-			"zh-tw" : {
-				toolbar : {
-					emoji : "Emoji 表情"
-				},
-				dialog : {
-					emoji : {
-						title : "Emoji 表情"
-					}
-				}
-			},
-			"en" : {
-				toolbar : {
-					emoji : "Emoji"
-				},
-				dialog : {
-					emoji : {
-						title : "Emoji"
-					}
-				}
-			}
-		};
-		
-		var first = 1;
-		var lazyloadClass = 'lazyload';
+        var langs = {
+            "zh-cn" : {
+                toolbar : {
+                    emoji : "Emoji 表情"
+                },
+                dialog : {
+                    emoji : {
+                        title : "Emoji 表情"
+                    }
+                }
+            },
+            "zh-tw" : {
+                toolbar : {
+                    emoji : "Emoji 表情"
+                },
+                dialog : {
+                    emoji : {
+                        title : "Emoji 表情"
+                    }
+                }
+            },
+            "en" : {
+                toolbar : {
+                    emoji : "Emoji"
+                },
+                dialog : {
+                    emoji : {
+                        title : "Emoji"
+                    }
+                }
+            }
+        };
 
-		exports.fn.emojiDialog = function() {
-			var _this       = this;
-			var cm          = this.cm;
-			var settings    = _this.settings;
+        var first = 1;
+        var lazyloadClass = 'lazyload';
+
+        exports.fn.emojiDialog = function() {
+            var _this       = this;
+            var cm          = this.cm;
+            var settings    = _this.settings;
             
             if (!settings.emoji)
             {
                 alert("settings.emoji == false");
                 return ;
-			}
+            }
 
-			var path        = settings.pluginPath + pluginName + "/";
-			var editor      = this.editor;
-			var cursor      = cm.getCursor();
-			var selection   = cm.getSelection();
-			var classPrefix = this.classPrefix;
+            var path        = settings.pluginPath + pluginName + "/";
+            var editor      = this.editor;
+            var cursor      = cm.getCursor();
+            var selection   = cm.getSelection();
+            var classPrefix = this.classPrefix;
 
-			$.extend(true, this.lang, langs[this.lang.name]);
-			this.setToolbar();
+            $.extend(true, this.lang, langs[this.lang.name]);
+            this.setToolbar();
 
-			var lang        = this.lang;
-			var dialogName  = classPrefix + pluginName, dialog;
-			var dialogLang  = lang.dialog.emoji;
-			
-			var dialogContent = [
-				"<div class=\"" + classPrefix + "emoji-dialog-box\" style=\"width: 760px;height: 334px;margin-bottom: 8px;overflow: hidden;\">",
-				"<div class=\"" + classPrefix + "tab\"></div>",
-				"</div>",
-			].join("\n");
+            var lang        = this.lang;
+            var dialogName  = classPrefix + pluginName, dialog;
+            var dialogLang  = lang.dialog.emoji;
 
-			cm.focus();
+            var dialogContent = [
+                "<div class=\"" + classPrefix + "emoji-dialog-box\" style=\"width: auto;height: 334px;margin-bottom: 8px;overflow: hidden;\">",
+                "<div class=\"" + classPrefix + "tab\"></div>",
+                "</div>",
+            ].join("\n");
 
-			if (editor.find("." + dialogName).length > 0) 
-			{
+            cm.focus();
+
+            if (editor.find("." + dialogName).length > 0) 
+            {
                 dialog = editor.find("." + dialogName);
 
-				selecteds = [];
-				dialog.find("a").removeClass("selected");
+                selecteds = [];
+                dialog.find("a").removeClass("selected");
 
-				this.dialogShowMask(dialog);
-				this.dialogLockScreen();
-				dialog.show();
-			} 
-			else
-			{
-				dialog = this.createDialog({
-					name       : dialogName,
-					title      : dialogLang.title,
-					width      : 800,
-					height     : 475,
-					mask       : settings.dialogShowMask,
-					drag       : settings.dialogDraggable,
-					content    : dialogContent,
-					lockScreen : settings.dialogLockScreen,
-					maskStyle  : {
-						opacity         : settings.dialogMaskOpacity,
-						backgroundColor : settings.dialogMaskBgColor
-					},
-					buttons    : {
-						enter  : [lang.buttons.enter, function() {							
-							cm.replaceSelection(selecteds.join(" "));
-							this.hide().lockScreen(false).hideMask();
-							
-							return false;
-						}],
-						cancel : [lang.buttons.cancel, function() {                           
-							this.hide().lockScreen(false).hideMask();
-							
-							return false;
-						}]
-					}
-				});
-			}
-			
-			var category = ["Github emoji", "Twemoji", "Font awesome"];
-			var categoryLength = category.length;
-			var tab      = dialog.find("." + classPrefix + "tab");
+                this.dialogShowMask(dialog);
+                this.dialogLockScreen();
+                dialog.show();
+            } 
+            else
+            {
+                dialog = this.createDialog({
+                    name       : dialogName,
+                    title      : dialogLang.title,
+                    height     : 475,
+                    mask       : settings.dialogShowMask,
+                    drag       : settings.dialogDraggable,
+                    content    : dialogContent,
+                    lockScreen : settings.dialogLockScreen,
+                    maskStyle  : {
+                        opacity         : settings.dialogMaskOpacity,
+                        backgroundColor : settings.dialogMaskBgColor
+                    },
+                    buttons    : {
+                        enter  : [lang.buttons.enter, function() {
+                            cm.replaceSelection(selecteds.join(" "));
+                            this.hide().lockScreen(false).hideMask();
+                            
+                            return false;
+                        }],
+                        cancel : [lang.buttons.cancel, function() {
+                            this.hide().lockScreen(false).hideMask();
+                            
+                            return false;
+                        }]
+                    }
+                });
+            }
 
-			if (tab.html() === "") 
-			{
-				var head = "<ul class=\"" + classPrefix + "tab-head\">";
+            var category = ["Github emoji", "Twemoji", "Font awesome"];
+            var categoryLength = category.length;
+            var tab      = dialog.find("." + classPrefix + "tab");
 
-				for (var i = 0; i<categoryLength; i++) {
-					var active = (i === emojiTabIndex) ? " class=\"active\"" : "";
-					head += "<li" + active + "><a href=\"javascript:;\">" + category[i] + "</a></li>";
-				}
+            if (tab.html() === "") 
+            {
+                var head = "<ul class=\"" + classPrefix + "tab-head\">";
 
-				head += "</ul>";
+                for (var i = 0; i<categoryLength; i++) {
+                    var active = (i === emojiTabIndex) ? " class=\"active\"" : "";
+                    head += "<li" + active + "><a href=\"javascript:;\">" + category[i] + "</a></li>";
+                }
 
-				tab.append(head);
+                head += "</ul>";
 
-				var container = "<div class=\"" + classPrefix + "tab-container\">";
+                tab.append(head);
 
-				for (var x = 0; x < categoryLength; x++) 
+                var container = "<div class=\"" + classPrefix + "tab-container\">";
+
+                for (var x = 0; x < categoryLength; x++) 
                 {
-					var display = (x === emojiTabIndex) ? "" : "display:none;";
-					container += "<div class=\"" + classPrefix + "tab-box\" style=\"height: 260px;overflow: hidden;overflow-y: auto;" + display + "\"></div>";
-				}
+                    var display = (x === emojiTabIndex) ? "" : "display:none;";
+                    container += "<div class=\"" + classPrefix + "tab-box\" style=\"height: 260px;overflow: auto;overflow-y: auto;" + display + "\"></div>";
+                }
 
-				container += "</div>";
+                container += "</div>";
 
-				tab.append(container);  
-			}
-            
-			var tabBoxs = tab.find("." + classPrefix + "tab-box");
+                tab.append(container);
+            }
+
+            var tabBoxs = tab.find("." + classPrefix + "tab-box");
             var emojiCategories = ["github-emoji", "twemoji", "font-awesome", logoPrefix];
 
-			var drawTable = function() {
+            var drawTable = function() {
                 var cname = emojiCategories[emojiTabIndex];
-				var $data = emojiData[cname];
+                var $data = emojiData[cname];
                 var $tab  = tabBoxs.eq(emojiTabIndex);
 
-				if ($tab.html() !== "") {
+                if ($tab.html() !== "") {
                     //console.log("break =>", cname);
                     return ;
                 }
@@ -188,7 +187,7 @@
                 var pagination = function(data, type) {
                     var rowNumber = (type === "editormd-logo") ? "5" : 20;
                     var pageTotal = Math.ceil(data.length / rowNumber);
-					var table     = "<div class=\"" + classPrefix + "grid-table\">";
+                    var table     = "<div class=\"" + classPrefix + "grid-table\">";
 
                     for (var i = 0; i < pageTotal; i++)
                     {
@@ -231,7 +230,7 @@
                             }
                             else
                             {
-                                row += "<a href=\"javascript:;\" value=\"\"></a>";                        
+                                row += "<a href=\"javascript:;\" value=\"\"></a>";
                             }
                         }
 
@@ -240,7 +239,7 @@
                         table += row;
                     }
 
-					table += "</div>";
+                    table += "</div>";
                     
                     return table;
                 };
@@ -259,93 +258,93 @@
                     $tab.append(pagination($data, cname));
                 }
 
-				$tab.find("." + classPrefix + "emoji-btn").bind(exports.mouseOrTouch("click", "touchend"), function() {
-					$(this).toggleClass("selected");
+                $tab.find("." + classPrefix + "emoji-btn").bind(exports.mouseOrTouch("click", "touchend"), function() {
+                    $(this).toggleClass("selected");
 
-					if ($(this).hasClass("selected")) 
-					{
-						selecteds.push($(this).attr("value"));
-					}
-				});
-			};
-			
-			if (emojiData.length < 1) 
-			{            
-				if (typeof dialog.loading === "function") {
+                    if ($(this).hasClass("selected")) 
+                    {
+                        selecteds.push($(this).attr("value"));
+                    }
+                });
+            };
+            
+            if (emojiData.length < 1) 
+            {            
+                if (typeof dialog.loading === "function") {
                     dialog.loading(true);
                 }
 
-				$.getJSON(path + "emoji.json?temp=" + Math.random(), function(json) {
+                $.getJSON(path + "emoji.json?temp=" + Math.random(), function(json) {
 
-					if (typeof dialog.loading === "function") {
+                    if (typeof dialog.loading === "function") {
                         dialog.loading(false);
                     }
 
-					emojiData = json;
+                    emojiData = json;
                     emojiData[logoPrefix] = logos;
-					drawTable();
-				});
-			} 
-			else 
-			{
-				drawTable();
-			}
+                    drawTable();
+                });
+            } 
+            else 
+            {
+                drawTable();
+            }
 
-			function loadImg() {
-				$("img." + lazyloadClass).lazyload({
-					placeholder: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Loading.gif',
-					effect: "fadeIn",
-					container: dialog.find('.' + classPrefix + "tab-box:visible"),
-					threshold: 50,
-				});
-			}
-			
-			if (first) {
-				_this.__proto__.loadScript('https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min', function () {
-					loadImg();
-				}, 1);
-			} else {
-				loadImg();
-			}
+            function loadImg() {
+                $("img." + lazyloadClass).lazyload({
+                    placeholder: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Loading.gif',
+                    effect: "fadeIn",
+                    container: dialog.find('.' + classPrefix + "tab-box:visible"),
+                    threshold: 50,
+                });
+            }
+            
+            if (first) {
+                _this.__proto__.loadScript('https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min', function () {
+                    loadImg();
+                }, 1);
+            } else {
+                loadImg();
+            }
 
-			tab.find("li").bind(exports.mouseOrTouch("click", "touchend"), function() {
-				var $this     = $(this);
-				emojiTabIndex = $this.index();
+            tab.find("li").bind(exports.mouseOrTouch("click", "touchend"), function() {
+                var $this     = $(this);
+                emojiTabIndex = $this.index();
 
-				$this.addClass("active").siblings().removeClass("active");
-				tabBoxs.eq(emojiTabIndex).show().siblings().hide();
-				drawTable();
-				loadImg();
-			});
+                $this.addClass("active").siblings().removeClass("active");
+                tabBoxs.eq(emojiTabIndex).show().siblings().hide();
+                drawTable();
+                loadImg();
+            });
 
-			first = 0;
-		};
+            first = 0;
+        };
 
-	};
-    
-	// CommonJS/Node.js
-	if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
+    };
+
+    // CommonJS/Node.js
+    if (typeof require === "function" && typeof exports === "object" && typeof module === "object")
     { 
         module.exports = factory;
     }
-	else if (typeof define === "function")  // AMD/CMD/Sea.js
+    else if (typeof define === "function")  // AMD/CMD/Sea.js
     {
-		if (define.amd) { // for Require.js
+        if (define.amd) { // for Require.js
 
-			define(["editormd"], function(editormd) {
+            define(["editormd"], function(editormd) {
                 factory(editormd);
             });
 
-		} else { // for Sea.js
-			define(function(require) {
+        } else { // for Sea.js
+            define(function(require) {
                 var editormd = require("./../../editormd");
                 factory(editormd);
             });
-		}
-	} 
-	else
-	{
+        }
+    } 
+    else
+    {
         factory(window.editormd);
-	}
+    }
 
 })();

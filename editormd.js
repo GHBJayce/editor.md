@@ -4225,7 +4225,8 @@
     editormd.createDialog = function(options) {
         var defaults = {
             name : "",
-            width : 420,
+            width : $(window).width() / 1.2,
+            maxWidth : 1000,
             height: 240,
             title : "",
             drag  : true,
@@ -4321,7 +4322,8 @@
             zIndex : editormd.dialogZindex,
             border : (editormd.isIE8) ? "1px solid #ddd" : "",
             width  : (typeof options.width  === "number") ? options.width + "px"  : options.width,
-            height : (typeof options.height === "number") ? options.height + "px" : options.height
+            maxWidth : (typeof options.maxWidth  === "number") ? options.maxWidth + "px"  : options.maxWidth,
+            height : (typeof options.height === "number") ? options.height + "px" : options.height,
         });
 
         var dialogPosition = function(){
@@ -4385,7 +4387,7 @@
                 posX = e.clientX - parseInt(dialog[0].style.left);
                 posY = e.clientY - parseInt(dialog[0].style.top);
 
-                document.onmousemove = moveAction;                   
+                document.onmousemove = moveAction;
             });
 
             var userCanSelect = function (obj) {
@@ -4393,7 +4395,7 @@
             };
 
             var userUnselect = function (obj) {
-                obj.addClass(classPrefix + "user-unselect").on("selectstart", function(event) { // selectstart for IE                        
+                obj.addClass(classPrefix + "user-unselect").on("selectstart", function(event) { // selectstart for IE
                     return false;
                 });
             };
@@ -4433,11 +4435,11 @@
                 dialog[0].style.top  = top + "px";
             };
 
-            document.onmouseup = function() {                            
+            document.onmouseup = function() {
                 userCanSelect($("body"));
                 userCanSelect(dialog);
 
-                document.onselectstart = null;         
+                document.onselectstart = null;
                 document.onmousemove = null;
             };
 
@@ -4500,7 +4502,8 @@
         } else {
             setTimeout(function () {
                 $($this.cm.display.wrapper).find('textarea').blur();
-            }, 100);
+                document.activeElement.blur(); // 解决移动端会触发弹出键盘行为
+            }, 30);
         }
 
         return dialog;
