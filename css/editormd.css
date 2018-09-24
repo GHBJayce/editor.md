@@ -1,15 +1,3 @@
-/*
- * Editor.md
- *
- * @file        editormd.css 
- * @version     v1.5.0 
- * @description Open source online markdown editor.
- * @license     MIT License
- * @author      Pandao
- * {@link       https://github.com/pandao/editor.md}
- * @updateTime  2015-06-09
- */
-
 @charset "UTF-8";
 /*! prefixes.scss v0.1.0 | Author: Pandao | https://github.com/pandao/prefixes.scss | MIT license | Copyright (c) 2015 */
 .editormd {
@@ -35,6 +23,39 @@
   border: none;
   vertical-align: middle;
 }
+.editormd .text-center {
+  text-align: center;
+}
+.editormd .editormd-memory-list {
+  list-style: none;
+  padding: 0 10px 0 0;
+  max-height: 400px;
+  overflow: auto;
+}
+.editormd .editormd-memory-item {
+  overflow: hidden;
+  margin-bottom: 15px;
+}
+.editormd .editormd-memory-content {
+  max-height: 100px;
+  overflow: auto;
+  padding: 10px;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+.editormd .editormd-memory-time {
+  float: left;
+  font-size: 12px;
+}
+.editormd .editormd-memory-operate {
+  float: right;
+}
 .editormd > textarea,
 .editormd .editormd-html-textarea,
 .editormd .editormd-markdown-textarea {
@@ -57,8 +78,8 @@
   appearance: none;
 }
 .editormd ::-webkit-scrollbar {
-  height: 10px;
-  width: 7px;
+  height: 6px;
+  width: 6px;
   background: rgba(0, 0, 0, 0.1);
 }
 .editormd ::-webkit-scrollbar:hover {
@@ -102,7 +123,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 10;
+  z-index: 11;
   border-bottom: 1px solid #ddd;
 }
 
@@ -256,15 +277,15 @@
   -ms-border-radius: 3px;
   -o-border-radius: 3px;
   border-radius: 3px;
-  -webkit-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
+  -webkit-box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
   /* Webkit browsers */
-  -moz-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
+  -moz-box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
   /* Firefox */
-  -ms-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
+  -ms-box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
   /* IE9 */
-  -o-box-shadow: 0 1px 3px rgba(26,26,26,0.3);
+  -o-box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
   /* Opera(Old) */
-  box-shadow: 0 1px 3px rgba(26,26,26,0.3);
+  box-shadow: 0 1px 3px rgba(26, 26, 26, 0.3);
   /* IE9+, News */
   background: #fff;
   font-size: 14px;
@@ -469,13 +490,18 @@
   transition: background-color 300ms ease-out, color 100ms ease-in;
   /* IE >9, FF >15, Opera >12.0 */
 }
+.editormd-grid-table-row a:hover {
+  color: #777;
+  background-color: #dff1df;
+}
 .editormd-grid-table-row a.selected {
   color: #666;
   background-color: #dff1df;
 }
-.editormd-grid-table-row a:hover {
-  color: #777;
-  background-color: #f6f6f6;
+
+.editormd-emoji-dialog .editormd-grid-table-row a:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s cubic-bezier(0, 1.01, 0.56, 2.65);
 }
 
 .editormd-tab-head {
@@ -504,12 +530,6 @@
   -o-border-top-right-radius: 3px;
   border-top-right-radius: 3px;
   background: #f6f6f6;
-  -webkit-transition: all 300ms ease-out;
-  /* Safari, Chrome */
-  -moz-transition: all 300ms ease-out;
-  /* Firefox 4.0~16.0 */
-  transition: all 300ms ease-out;
-  /* IE >9, FF >15, Opera >12.0 */
 }
 .editormd-tab-head li a:hover {
   color: #666;
@@ -675,10 +695,11 @@
   line-height: 1.6;
   display: none;
   background: #fff;
+  z-index: 10;
 }
 
 .editormd .CodeMirror {
-  z-index: 10;
+  z-index: 11;
   float: left;
   border-right: 1px solid #ddd;
   font-size: 14px;
@@ -689,9 +710,22 @@
 .editormd .CodeMirror pre {
   font-size: 14px;
   padding: 0 12px;
+  min-height: 25px;
+  line-height: 25px;
 }
 .editormd .CodeMirror-linenumbers {
   padding: 0 5px;
+}
+.editormd .CodeMirror-lines {
+  padding: 0;
+}
+.editormd .CodeMirror-gutter-wrapper {
+  line-height: 25px;
+}
+.editormd .CodeMirror div.CodeMirror-cursor {
+  border-left: 2px solid #555;
+  height: 16px !important;
+  margin-top: 5px;
 }
 .editormd .CodeMirror-selected {
   background: #70B7FF;
@@ -715,6 +749,7 @@
 }
 .editormd .CodeMirror pre.CodeMirror-placeholder {
   color: #999;
+  position: absolute;
 }
 .editormd .cm-trailingspace {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAQAAAACCAYAAAB/qH1jAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH3QUXCToH00Y1UgAAACFJREFUCNdjPMDBUc/AwNDAAAFMTAwMDA0OP34wQgX/AQBYgwYEx4f9lQAAAABJRU5ErkJggg==);
@@ -4448,3 +4483,5 @@ hr.editormd-page-break {
 .editormd-theme-dark .CodeMirror {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
+
+/*# sourceMappingURL=editormd.css.map */

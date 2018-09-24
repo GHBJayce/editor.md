@@ -66,6 +66,7 @@
         };
 
         var first = 1;
+        var loadAbnormalCount = 0;
         var lazyloadClass = 'lazyload';
 
         exports.fn.emojiDialog = function() {
@@ -291,12 +292,25 @@
             }
 
             function loadImg() {
-                $("img." + lazyloadClass).lazyload({
-                    placeholder: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Loading.gif',
-                    effect: "fadeIn",
-                    container: dialog.find('.' + classPrefix + "tab-box:visible"),
-                    threshold: 50,
-                });
+                var nowTableBox = $('.' + classPrefix + 'tab-box:eq(' + emojiTabIndex + ')');
+                var img = nowTableBox.find("img." + lazyloadClass);
+                if (img.length) {
+                    img.lazyload({
+                        placeholder: 'https://upload.wikimedia.org/wikipedia/commons/4/42/Loading.gif',
+                        effect: "fadeIn",
+                        container: nowTableBox,
+                        threshold: 50,
+                    });
+                    loadAbnormalCount = 0;
+                } else {
+                    if (loadAbnormalCount < 3) {
+                        setTimeout(function () {
+                            loadImg();
+                        }, 300);
+                        // console.log('渲染跟不上重新加载emoji中...');
+                    }
+                    loadAbnormalCount++;
+                }
             }
             
             if (first) {

@@ -21,7 +21,7 @@
             @include border-top-left-radius(3px);
             @include border-top-right-radius(3px);
             background: #f6f6f6;
-            @include transition(all 300ms ease-out);
+            // @include transition(all 300ms ease-out);
 
             &:hover {
                 color: #666;

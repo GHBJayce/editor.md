@@ -25,7 +25,44 @@
     img {
         border: none;
         vertical-align: middle;
-    }            
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    #{$prefix}memory {
+        &-list {
+            list-style: none;
+            padding: 0 10px 0 0;
+            max-height: 400px;
+            overflow: auto;
+        }
+
+        &-item {
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
+
+        &-content {
+            max-height: 100px;
+            overflow: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            @include border-radius(2px);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        &-time {
+            float: left;
+            font-size: 12px;
+        }
+
+        &-operate {
+            float: right;
+        }
+    }
 
     > textarea,
     #{$prefix}html-textarea,
@@ -49,8 +86,8 @@
     }
             
     ::-webkit-scrollbar {
-        height: 10px;
-        width: 7px;
+        height: 6px;
+        width: 6px;
         background: rgba(0, 0, 0, .1);
 
         &:hover {
@@ -81,7 +118,7 @@
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 11;
     border-bottom: 1px solid $borderColor;
 }
 

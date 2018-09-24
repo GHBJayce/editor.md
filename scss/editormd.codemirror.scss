@@ -24,7 +24,7 @@
 .editormd {
     
     .CodeMirror {
-        z-index: 10;
+        z-index: 11;
         float: left;
         border-right: 1px solid $borderColor;
         font-size: 14px;
@@ -32,14 +32,30 @@
         line-height: 1.6;
         margin-top: 35px;
 
-		pre {
-			font-size: 14px;
+        pre {
+            font-size: 14px;
             padding: 0 12px;
-		}
+            min-height: 25px;
+            line-height: 25px;
+        }
     }
-    
+
     .CodeMirror-linenumbers {
         padding: 0 5px;
+    }
+
+    .CodeMirror-lines {
+        padding: 0;
+    }
+
+    .CodeMirror-gutter-wrapper {
+        line-height: 25px;
+    }
+
+    .CodeMirror div.CodeMirror-cursor {
+        border-left: 2px solid #555;
+        height: 16px !important;
+        margin-top: 5px;
     }
 
     .CodeMirror-selected {
@@ -74,6 +90,7 @@
     
     .CodeMirror pre.CodeMirror-placeholder { 
         color: #999;
+        position: absolute;
     }
 
     .cm-trailingspace {

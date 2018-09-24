@@ -69,7 +69,7 @@
             "bold", "del", "italic", "quote", "ucwords", "uppercase", "lowercase", "|", 
             "h1", "h2", "h3", "h4", "h5", "h6", "|", 
             "list-ul", "list-ol", "hr", "|",
-            "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "|",
+            "link", "reference-link", "image", "code", "preformatted-text", "code-block", "table", "datetime", "emoji", "html-entities", "pagebreak", "memory", "|",
             "goto-line", "watch", "preview", "fullscreen", "clear", "search", "|",
             "help", "info"
         ],
@@ -77,7 +77,7 @@
             "undo", "redo", "|", 
             "bold", "del", "italic", "quote", "uppercase", "lowercase", "|", 
             "h1", "h2", "h3", "h4", "h5", "h6", "|", 
-            "list-ul", "list-ol", "hr", "|",
+            "list-ul", "list-ol", "hr", "memory", "|",
             "watch", "preview", "fullscreen", "|",
             "help", "info"
         ],
@@ -169,6 +169,9 @@
         flowChart            : false,          // flowChart.js only support IE9+
         sequenceDiagram      : false,          // sequenceDiagram.js only support IE9+
         previewCodeHighlight : true,
+
+        memory               : true,
+        memoryLocalKey       : editormd.classPrefix + "local",
                 
         toolbar              : true,           // show/hide toolbar
         toolbarAutoFixed     : true,           // on window scroll auto fixed position
@@ -222,7 +225,8 @@
             fullscreen       : "fa-arrows-alt",
             clear            : "fa-eraser",
             help             : "fa-question-circle",
-            info             : "fa-info-circle"
+            info             : "fa-info-circle",
+            memory           : "fa-history",
         },        
         toolbarIconTexts     : {},
         
@@ -268,7 +272,8 @@
                 clear            : "清空",
                 search           : "搜索",
                 help             : "使用帮助",
-                info             : "关于" + editormd.title
+                info             : "关于" + editormd.title,
+                memory           : "历史记录 （Alt + H）",
             },
             buttons : {
                 enter  : "确定",
@@ -1817,7 +1822,11 @@
             $(window).resize(function(){
                 _this.resize();
             });
-            
+
+            $(window).on('beforeunload', function () {
+                _this.historyMemory();
+            });
+
             this.bindScrollEvent().bindChangeEvent();
             
             if (!recreate)
@@ -2770,6 +2779,65 @@
         loadScript : function (fileName, callback, into) {
             editormd.loadScript(fileName, callback, into);
         },
+
+        historyMemory : function () {
+            var settings = this.settings;
+
+            if (settings.memory) {
+                var localKey = settings.memoryLocalKey;
+                var localMemory = this.localGet(localKey) || {
+                    data: [],
+                };
+                var data = localMemory.data;
+                var dataLength = data.length;
+                var markdown = this.getMarkdown();
+                var date = new Date();
+                var dateUnix = editormd.dateFormat('UNIX Time', date);
+                var dateFmt = editormd.dateFormat('yyyy-mm-dd', date);
+                var timeFmt = editormd.dateFormat('time', date);
+
+                function isRepeat() {
+                    var bool = false;
+                    for (var i=0; i<dataLength; i++) {
+                        if (data[i].content == markdown) {
+                            bool = true;
+                            break;
+                        }
+                    }
+
+                    return bool;
+                }
+
+                if (!isRepeat() && markdown != undefined && markdown.trim() != '') {
+                    var template = {
+                        content: markdown,
+                        cursor: this.getCursor(),
+                        time: {
+                            now: date,
+                            date: dateFmt,
+                            time: timeFmt,
+                        },
+                    };
+                    localMemory.data.unshift(template);
+                    this.localSave(localMemory, localKey);
+                }
+            }
+
+            return this;
+        },
+
+        localGet(key) {
+            var val = localStorage[key];
+
+            return (val === undefined || val.trim() === '') ? false : JSON.parse(val);
+        },
+
+        localSave(data, key) {
+            data = JSON.stringify(data);
+            localStorage[key] = data;
+
+            return data === localStorage[key];
+        }
     };
     
     editormd.fn.init.prototype = editormd.fn; 
@@ -3184,7 +3252,11 @@
 
         info : function() {
             this.showInfoDialog();
-        }
+        },
+
+        memory : function() {
+            this.executePlugin("memoryDialog", "memory-dialog/memory-dialog");
+        },
     };
     
     editormd.keyMaps = {
@@ -3215,6 +3287,7 @@
             }
         },
         "Ctrl-Alt-G"   : "goto-line",
+        "Alt-H"        : "memory",
         "Ctrl-H"       : "hr",
         "Ctrl-I"       : "italic",
         "Ctrl-K"       : "code",
@@ -3525,8 +3598,14 @@
                     return "";
                 }
             }
-
-            var out = "<a href=\"" + href + "\"";
+ 
+            var out;
+            // 如果是内锚链，在原窗口中操作。否则新建窗口
+            if (href.indexOf('#') === 0) {
+                out = "<a href=\"" + href + "\"";
+            } else {
+                out = "<a target=\"_blank\" href=\"" + href + "\"";
+            }
             
             if (atLinkReg.test(title) || atLinkReg.test(text))
             {
@@ -4540,14 +4619,14 @@
      * @returns {String}   datefmt      返回格式化后的日期时间字符串
      */
     
-    editormd.dateFormat = function(format) {                
+    editormd.dateFormat = function(format, date) {                
         format      = format || "";
 
         var addZero = function(d) {
             return (d < 10) ? "0" + d : d;
         };
 
-        var date    = new Date(); 
+        var date    = date || new Date(); 
         var year    = date.getFullYear();
         var year2   = year.toString().slice(2, 4);
         var month   = addZero(date.getMonth() + 1);
@@ -4630,7 +4709,10 @@
             case "yyyy-mm-dd" :
                     datefmt = fymd;
                 break;
-
+            case "time" :
+            case "h:i:s" :
+                    datefmt = hms;
+                break;
             case "yyyy-mm-dd h:i:s ms" :
             case "full + ms" : 
                     datefmt = fymd + " " + hms + " " + ms;
