@@ -55,8 +55,11 @@
         }
 
         &-time {
-            float: left;
             font-size: 12px;
+        }
+
+        #{$prefix}memory-time {
+            float: left;
         }
 
         &-operate {
@@ -148,6 +151,7 @@
 @import "editormd.codemirror"; 
 @import "editormd.preview";
 @import "editormd.preview.themes";
+@import "editormd.code";
 
 #{$prefix}onlyread {
     #{$prefix}toolbar {

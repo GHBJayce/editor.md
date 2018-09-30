@@ -65,12 +65,12 @@
             function loadData() {
                 var dialogHTML = initHtml = '<div class="'+ className +' text-center">暂无历史记录</div>';
 
-                if (data.length > 0) {
+                if (localMemory && data.length > 0) {
                     var dataLength = data.length;
                     dialogHTML = '<div class="'+ className +'"><ul class="'+ prefix +'list">';
                     for (var i = 0; i < dataLength; i++) {
                         dialogHTML += '<li class="'+ prefix +'item">\
-                            <pre class="'+ prefix +'content">'+ data[i].content +'</pre>\
+                            <pre class="'+ prefix +'content">'+ _this.html2Escape(data[i].content) +'</pre>\
                             <span class="'+ prefix +'operate" data-key="'+ i +'">\
                                 <button class="editormd-btn restore"><i class="fa fa-arrow-left"></i></button>\
                                 <button class="editormd-btn delete"><i class="fa fa-trash-o"></i></button>\
@@ -96,9 +96,7 @@
                     var key = parentEle.getAttribute('data-key');
 
                     if (cName.indexOf('restore') !== -1) {
-                        $.proxy(proto.setMarkdown, _this)(data[key].content);
-                        $.proxy(proto.gotoLine, _this)(data[key].cursor.line);
-                        $.proxy(proto.setCursor, _this)(data[key].cursor);
+                        $.proxy(proto.restoreMemory, _this)(data[key]);
                         dialog.hidden();
                     } else if (cName.indexOf('delete') !== -1) {
                         if (confirm('是否确定删除？')) {

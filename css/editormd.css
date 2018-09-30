@@ -8,7 +8,7 @@
   overflow: hidden;
   position: relative;
   margin-bottom: 15px;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   font-family: "Meiryo UI", "Microsoft YaHei", "Malgun Gothic", "Segoe UI", "Trebuchet MS", Helvetica, "Monaco", monospace, Tahoma, STXihei, "华文细黑", STHeiti, "Helvetica Neue", "Droid Sans", "wenquanyi micro hei", FreeSans, Arimo, Arial, SimSun, "宋体", Heiti, "黑体", sans-serif;
 }
 .editormd *, .editormd *:before, .editormd *:after {
@@ -50,8 +50,10 @@
   word-wrap: break-word;
 }
 .editormd .editormd-memory-time {
-  float: left;
   font-size: 12px;
+}
+.editormd .editormd-memory .editormd-memory-time {
+  float: left;
 }
 .editormd .editormd-memory-operate {
   float: right;
@@ -124,7 +126,7 @@
   top: 0;
   left: 0;
   z-index: 11;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #dddddd;
 }
 
 .editormd-toolbar-container {
@@ -153,11 +155,11 @@
   text-indent: -9999px;
   margin: 0 5px;
   height: 65%;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #dddddd;
 }
 .editormd-menu > li > a {
   outline: 0;
-  color: #666;
+  color: #666666;
   display: inline-block;
   min-width: 24px;
   font-size: 16px;
@@ -177,7 +179,7 @@
   /* IE >9, FF >15, Opera >12.0 */
 }
 .editormd-menu > li > a:hover, .editormd-menu > li > a.active {
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   background: #eee;
 }
 .editormd-menu > li > a > .fa {
@@ -200,7 +202,7 @@
 .editormd-dropdown-menu {
   display: none;
   background: #fff;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   width: 148px;
   list-style: none;
   position: absolute;
@@ -236,7 +238,7 @@
   top: -10px;
 }
 .editormd-dropdown-menu > li > a {
-  color: #666;
+  color: #666666;
   display: block;
   text-decoration: none;
   padding: 8px 10px;
@@ -251,7 +253,7 @@
   /* IE >9, FF >15, Opera >12.0 */
 }
 .editormd-dropdown-menu > li + li {
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #dddddd;
 }
 
 .editormd-container {
@@ -268,7 +270,7 @@
 }
 
 .editormd-dialog {
-  color: #666;
+  color: #666666;
   position: fixed;
   z-index: 99999;
   display: none;
@@ -313,7 +315,7 @@
 .editormd-dialog-container select {
   color: #999;
   padding: 3px 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
 }
 
 .editormd-dialog-close {
@@ -549,7 +551,7 @@
 }
 
 .editormd-form {
-  color: #666;
+  color: #666666;
 }
 .editormd-form label {
   float: left;
@@ -572,7 +574,7 @@
 .editormd-form input[type="text"], .editormd-form input[type="number"] {
   color: #999;
   padding: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
 }
 .editormd-form input[type="number"] {
   width: 40px;
@@ -612,7 +614,7 @@
 .editormd-dialog-footer input[type="submit"],
 .editormd-dialog-footer .editormd-btn,
 .editormd-dialog-footer button {
-  color: #666;
+  color: #666666;
   min-width: 75px;
   cursor: pointer;
   background: #fff;
@@ -701,7 +703,7 @@
 .editormd .CodeMirror {
   z-index: 11;
   float: left;
-  border-right: 1px solid #ddd;
+  border-right: 1px solid #dddddd;
   font-size: 14px;
   font-family: "YaHei Consolas Hybrid", Consolas, "微软雅黑", "Meiryo UI", "Malgun Gothic", "Segoe UI", "Trebuchet MS", Helvetica, "Monaco", courier, monospace;
   line-height: 1.6;
@@ -873,6 +875,7 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg);
@@ -883,6 +886,7 @@
     -webkit-transform: rotate(0deg);
     transform: rotate(0deg);
   }
+
   100% {
     -webkit-transform: rotate(359deg);
     transform: rotate(359deg);
@@ -3196,7 +3200,7 @@
 }
 
 .editormd-logo-color {
-  color: #2196F3;
+  color: #2196f3;
 }
 
 /*! github-markdown-css | The MIT License (MIT) | Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com) | https://github.com/sindresorhus/github-markdown-css */
@@ -3871,8 +3875,8 @@
   background-color: #fff;
 }
 .editormd-preview-container blockquote, .editormd-html-preview blockquote {
-  color: #666;
-  border-left: 4px solid #ddd;
+  color: #666666;
+  border-left: 4px solid #dddddd;
   padding-left: 20px;
   margin-left: 0;
   font-size: 14px;
@@ -3888,18 +3892,18 @@
 .editormd-preview-container hr, .editormd-html-preview hr {
   height: 1px;
   border: none;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid #dddddd;
   background: none;
 }
 .editormd-preview-container code, .editormd-html-preview code {
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   background: #f6f6f6;
   padding: 3px;
   border-radius: 3px;
   font-size: 14px;
 }
 .editormd-preview-container pre, .editormd-html-preview pre {
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   background: #f6f6f6;
   padding: 10px;
   -webkit-border-radius: 3px;
@@ -3945,58 +3949,58 @@
 /*! Pretty printing styles. Used with prettify.js. */
 /* SPAN elements with the classes below are added by prettyprint. */
 .pln {
-  color: #000;
+  color: black;
 }
 
 /* plain text */
 @media screen {
   .str {
-    color: #080;
+    color: #008800;
   }
 
   /* string content */
   .kwd {
-    color: #008;
+    color: #000088;
   }
 
   /* a keyword */
   .com {
-    color: #800;
+    color: #880000;
   }
 
   /* a comment */
   .typ {
-    color: #606;
+    color: #660066;
   }
 
   /* a type name */
   .lit {
-    color: #066;
+    color: #006666;
   }
 
   /* a literal value */
   /* punctuation, lisp open bracket, lisp close bracket */
   .pun, .opn, .clo {
-    color: #660;
+    color: #666600;
   }
 
   .tag {
-    color: #008;
+    color: #000088;
   }
 
   /* a markup tag name */
   .atn {
-    color: #606;
+    color: #660066;
   }
 
   /* a markup attribute name */
   .atv {
-    color: #080;
+    color: #008800;
   }
 
   /* a markup attribute value */
   .dec, .var {
-    color: #606;
+    color: #660066;
   }
 
   /* a declaration; a variable name */
@@ -4009,7 +4013,7 @@
 /* Use higher contrast and text-weight for printable form. */
 @media print, projection {
   .str {
-    color: #060;
+    color: #006600;
   }
 
   .kwd {
@@ -4028,11 +4032,11 @@
   }
 
   .lit {
-    color: #044;
+    color: #004444;
   }
 
   .pun, .opn, .clo {
-    color: #440;
+    color: #444400;
   }
 
   .tag {
@@ -4041,17 +4045,17 @@
   }
 
   .atn {
-    color: #404;
+    color: #440044;
   }
 
   .atv {
-    color: #060;
+    color: #006600;
   }
 }
 /* Put a border around prettyprinted code snippets. */
 pre.prettyprint {
   padding: 2px;
-  border: 1px solid #888;
+  border: 1px solid #888888;
 }
 
 /* Specify class=linenums on a pre to get line numbering */
@@ -4078,12 +4082,12 @@ li.L3,
 li.L5,
 li.L7,
 li.L9 {
-  background: #eee;
+  background: #eeeeee;
 }
 
 .editormd-preview-container pre.prettyprint, .editormd-html-preview pre.prettyprint {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #dddddd;
   white-space: pre-wrap;
   word-wrap: break-word;
 }
@@ -4410,7 +4414,7 @@ hr.editormd-page-break {
     /* a function name */
   }
   .editormd-preview-theme-dark .str {
-    color: #080;
+    color: #008800;
   }
   .editormd-preview-theme-dark .kwd {
     color: #ff9900;
@@ -4419,13 +4423,13 @@ hr.editormd-page-break {
     color: #444444;
   }
   .editormd-preview-theme-dark .typ {
-    color: #606;
+    color: #660066;
   }
   .editormd-preview-theme-dark .lit {
-    color: #066;
+    color: #006666;
   }
   .editormd-preview-theme-dark .pun, .editormd-preview-theme-dark .opn, .editormd-preview-theme-dark .clo {
-    color: #660;
+    color: #666600;
   }
   .editormd-preview-theme-dark .tag {
     color: #ff9900;
@@ -4434,7 +4438,7 @@ hr.editormd-page-break {
     color: #6C95F5;
   }
   .editormd-preview-theme-dark .atv {
-    color: #080;
+    color: #008800;
   }
   .editormd-preview-theme-dark .dec, .editormd-preview-theme-dark .var {
     color: #008BA7;
@@ -4443,6 +4447,12 @@ hr.editormd-page-break {
     color: red;
   }
 }
+.lang-shell.shell-flag:before {
+  content: '$';
+  margin: 0 10px 0 5px;
+  color: #4CAF50;
+}
+
 .editormd-onlyread .editormd-toolbar {
   display: none;
 }
@@ -4483,5 +4493,3 @@ hr.editormd-page-break {
 .editormd-theme-dark .CodeMirror {
   border-right: 1px solid rgba(0, 0, 0, 0.1);
 }
-
-/*# sourceMappingURL=editormd.css.map */

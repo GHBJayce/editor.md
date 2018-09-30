@@ -20,3 +20,7 @@
 
 - ~~CodeMirror编辑器的代码无法高亮；~~
 - ~~sequenceDiagram不支持: `Uncaught TypeError: Cannot call method 'isArray' of undefined.`~~
+
+## 2018-9-28
+
+- 加载script资源失败时，页面没有下步操作，编辑器无法正常初始化，需要手动刷新页面一次、甚至多次

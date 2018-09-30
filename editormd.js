@@ -170,9 +170,6 @@
         sequenceDiagram      : false,          // sequenceDiagram.js only support IE9+
         previewCodeHighlight : true,
 
-        memory               : true,
-        memoryLocalKey       : editormd.classPrefix + "local",
-                
         toolbar              : true,           // show/hide toolbar
         toolbarAutoFixed     : true,           // on window scroll auto fixed position
         toolbarIcons         : "full",
@@ -326,7 +323,23 @@
                     title : "使用帮助"
                 }
             }
-        }
+        },
+
+        detectLastMemory: true, // 加载完成后 检查上一次编辑内容
+
+        memory: true, // 历史编辑存储功能
+        memoryLocalKey: editormd.classPrefix + "local", // 本地存储key
+
+        // 预渲染
+        preRender: {
+            // 代码块
+            code: {
+                shell: {
+                    prefix: true, // 前缀标识
+                    prefixClass: 'shell-flag', // 前缀标识的类名
+                },
+            },
+        },
     };
     
     editormd.classNames  = {
@@ -487,6 +500,10 @@
                 this.loadQueues();
             }
 
+            this.loadScript = editormd.loadScript;
+            this.loadCSS = editormd.loadCSS;
+            this.html2Escape = editormd.html2Escape;
+
             return this;
         },
         
@@ -561,7 +578,7 @@
             
             if (settings.codeFold)
             {
-                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");            
+                editormd.loadCSS(loadPath + "codemirror/addon/fold/foldgutter");
             }
             
             editormd.loadScript(loadPath + "codemirror/codemirror.min", function() {
@@ -1805,6 +1822,7 @@
             var editor           = this.editor;
             var preview          = this.preview;
             var settings         = this.settings;
+            var lang             = this.lang;
             
             this.containerMask.hide();
             
@@ -1835,6 +1853,30 @@
             }
             
             this.state.loaded = true;
+
+            if (settings.detectLastMemory) {
+                var localMemory = this.localGet(settings.memoryLocalKey);
+                if (localMemory && localMemory.data.length > 0) {
+                    var data = localMemory.data[0];
+                    var content = '<div>检查到你在 <span class="' + this.classPrefix + 'memory-time">' + data.time.date + ' ' + data.time.time + '</span> 存在编辑内容，继续上一次编辑吗？<pre class="' + this.classPrefix + 'memory-content">' + this.html2Escape(data.content) + '</pre></div>';
+
+                    var dialog = this.createDialog({
+                        title: '恢复历史编辑',
+                        content: content,
+                        buttons: {
+                            enter: [lang.buttons.enter, function() {
+                                _this.restoreMemory(data);
+                                this.hidden();
+                            }],
+
+                            cancel: [lang.buttons.cancel, function() {
+
+                            }]
+                        }
+                    });
+                    dialog.centerPosition();
+                }
+            }
 
             return this;
         },
@@ -2763,21 +2805,17 @@
             
             return this;
         },
-        
+
         searchReplace : function() {            
             this.search("replace");
             
             return this;
         },
-        
+
         searchReplaceAll : function() {          
             this.search("replaceAll");
             
             return this;
-        },
-
-        loadScript : function (fileName, callback, into) {
-            editormd.loadScript(fileName, callback, into);
         },
 
         historyMemory : function () {
@@ -2813,7 +2851,7 @@
                         content: markdown,
                         cursor: this.getCursor(),
                         time: {
-                            now: date,
+                            now: dateUnix,
                             date: dateFmt,
                             time: timeFmt,
                         },
@@ -2826,18 +2864,36 @@
             return this;
         },
 
-        localGet(key) {
+        /**
+         * 恢复历史编辑
+         * 
+         * @author GHBJayce
+         * @date 2018-9-27
+         */
+        restoreMemory : function (params) {
+            if (params.content) {
+                this.setMarkdown(params.content);
+            }
+            if (params.cursor) {
+                if (params.cursor.line) {
+                    this.gotoLine(params.cursor.line);
+                }
+                this.setCursor(params.cursor);
+            }
+        },
+
+        localGet: function (key) {
             var val = localStorage[key];
 
             return (val === undefined || val.trim() === '') ? false : JSON.parse(val);
         },
 
-        localSave(data, key) {
+        localSave: function (data, key) {
             data = JSON.stringify(data);
             localStorage[key] = data;
 
             return data === localStorage[key];
-        }
+        },
     };
     
     editormd.fn.init.prototype = editormd.fn; 
@@ -3489,6 +3545,7 @@
         var faIconReg       = regexs.fontAwesome;
         var editormdLogoReg = regexs.editormdLogo;
         var pageBreakReg    = regexs.pageBreak;
+        var defaultSettings = editormd.defaults;
 
         markedRenderer.emoji = function(text) {
             
@@ -3702,7 +3759,7 @@
                            : ( (pageBreakReg.test(text)) ? this.pageBreak(text) : "<p" + isTeXAddClass + ">" + this.atLink(this.emoji(text)) + "</p>\n" );
         };
 
-        markedRenderer.code = function (code, lang, escaped) { 
+        markedRenderer.code = function (code, lang, escaped) {
 
             if (lang === "seq" || lang === "sequence")
             {
@@ -3715,11 +3772,14 @@
             else if ( lang === "math" || lang === "latex" || lang === "katex")
             {
                 return "<p class=\"" + editormd.classNames.tex + "\">" + code + "</p>";
-            } 
+            }
             else 
             {
-
-                return marked.Renderer.prototype.code.apply(this, arguments);
+                var codeRenderer = marked.Renderer.prototype.code.apply(this, arguments);
+                if (defaultSettings.preRender.code.shell.prefix && lang === 'shell') {
+                    codeRenderer = codeRenderer.replace('shell', 'shell ' + defaultSettings.preRender.code.shell.prefixClass);
+                }
+                return codeRenderer;
             }
         };
 
@@ -3743,7 +3803,7 @@
                 return "<li>" + this.atLink(this.emoji(text)) + "</li>";
             }
         };
-        
+
         return markedRenderer;
     };
     
@@ -4158,6 +4218,14 @@
         css    : [],
         plugin : []
     };
+
+    editormd.loadFilesAbnormal = {
+        js: [],
+        css: [],
+        plugin: [],
+    },
+
+    editormd.loadAbnormal = 0;
     
     /**
      * 动态加载Editor.md插件，但不立即执行
@@ -4187,18 +4255,47 @@
      */
     
     editormd.loadCSS   = function(fileName, callback, into) {
-        into       = into     || "head";        
+        into       = into     || "head";
         callback   = callback || function() {};
-        
+
+        console.log('loadCss fun: ', this);
+
+        var _this = this;
         var css    = document.createElement("link");
         css.type   = "text/css";
         css.rel    = "stylesheet";
         css.onload = css.onreadystatechange = function() {
-            editormd.loadFiles.css.push(fileName);
+            console.log('css onreadystatechange: ', event, css);
+            _this.successHandle();
             callback();
         };
 
         css.href   = fileName + ".css";
+
+        css.onerror = function () {
+            console.log('loadCss onerror: ', event);
+            _this.errorHandle();
+        };
+
+        this.errorHandle = function () {
+            if (editormd.loadAbnormal < 3) {
+                if (editormd.loadFilesAbnormal.css[fileName] === undefined) {
+                    editormd.loadFilesAbnormal.css[fileName] = 0;
+                }
+                editormd.loadFilesAbnormal.css[fileName]++;
+                editormd.loadAbnormal++;
+                console.log('loadCss errorhandle: ', editormd);
+                editormd.prototype.init(_this.id, _this.settings);
+            } else {
+                alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
+            }
+        }
+
+        this.successHandle = function () {
+            editormd.loadFiles.css.push(fileName);
+            editormd.loadFilesAbnormal.css = {};
+            editormd.loadAbnormal = 0;
+        }
 
         if(into === "head") {
             document.getElementsByTagName("head")[0].appendChild(css);
@@ -4220,36 +4317,68 @@
      */
 
     editormd.loadScript = function(fileName, callback, into) {
-        
+
         into          = into     || "head";
         callback      = callback || function() {};
-        
-        var script    = null; 
+
+        var _this = this;
+        var script    = null;
         script        = document.createElement("script");
         script.id     = fileName.replace(/[\./]+/g, "-");
-        script.type   = "text/javascript";        
+        script.type   = "text/javascript";
         script.src    = fileName + ".js";
-        
-        if (editormd.isIE8) 
-        {            
+        console.log('loadScript fun: ', this);
+        if (editormd.isIE8)
+        {
             script.onreadystatechange = function() {
+                console.log('onreadystatechange: ', event, script.readyState);
                 if(script.readyState) 
                 {
                     if (script.readyState === "loaded" || script.readyState === "complete") 
                     {
-                        script.onreadystatechange = null; 
-                        editormd.loadFiles.js.push(fileName);
+                        script.onreadystatechange = null;
+                        _this.successHandle();
                         callback();
                     }
-                } 
+                    else
+                    {
+                        _this.errorHandle();
+                    }
+                }
             };
         }
         else
         {
             script.onload = function() {
-                editormd.loadFiles.js.push(fileName);
+                console.log('loadScript onload: ', event);
+                _this.successHandle();
                 callback();
             };
+
+            script.onerror = function () {
+                console.log('loadScript onerror: ', event);
+                _this.errorHandle();
+            }
+        }
+
+        this.errorHandle = function () {
+            if (editormd.loadAbnormal < 3) {
+                if (editormd.loadFilesAbnormal.js[fileName] === undefined) {
+                    editormd.loadFilesAbnormal.js[fileName] = 0;
+                }
+                editormd.loadFilesAbnormal.js[fileName]++;
+                editormd.loadAbnormal++;
+                console.log('loadScript errorhandle: ', editormd);
+                editormd.prototype.init(_this.id, _this.settings);
+            } else {
+                alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
+            }
+        }
+
+        this.successHandle = function () {
+            editormd.loadFiles.js.push(fileName);
+            editormd.loadFilesAbnormal.js = {};
+            editormd.loadAbnormal = 0;
         }
 
         if (into === "head") {
@@ -4306,7 +4435,7 @@
             name : "",
             width : $(window).width() / 1.2,
             maxWidth : 1000,
-            height: 240,
+            height: 'auto',
             title : "",
             drag  : true,
             closed : true,
@@ -4405,7 +4534,7 @@
             height : (typeof options.height === "number") ? options.height + "px" : options.height,
         });
 
-        var dialogPosition = function(){
+        var dialogPosition = dialog.centerPosition = function(){
             dialog.css({
                 top    : ($(window).height() - dialog.height()) / 2 + "px",
                 left   : ($(window).width() - dialog.width()) / 2 + "px"
@@ -4619,7 +4748,7 @@
      * @returns {String}   datefmt      返回格式化后的日期时间字符串
      */
     
-    editormd.dateFormat = function(format, date) {                
+    editormd.dateFormat = function(format, date) {
         format      = format || "";
 
         var addZero = function(d) {
@@ -4726,6 +4855,17 @@
         }
 
         return datefmt;
+    };
+
+    editormd.html2Escape = function (html) {
+        return html.replace(/[<>&"]/g, function (c) {
+            return {
+                '<': '&lt;',
+                '>': '&gt;',
+                '&': '&amp;',
+                '"': '&quot;',
+            }[c];
+        });
     };
 
     return editormd;

@@ -1,0 +1,7 @@
+@charset "UTF-8";
+
+.lang-shell.shell-flag:before {
+    content: '$';
+    margin: 0 10px 0 5px;
+    color: #4CAF50;
+}

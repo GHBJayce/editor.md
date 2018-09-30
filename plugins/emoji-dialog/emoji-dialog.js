@@ -314,7 +314,7 @@
             }
             
             if (first) {
-                _this.__proto__.loadScript('https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min', function () {
+                this.loadScript('https://cdn.bootcss.com/jquery_lazyload/1.9.7/jquery.lazyload.min', function () {
                     loadImg();
                 }, 1);
             } else {
