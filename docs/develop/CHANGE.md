@@ -597,3 +597,4 @@ v1.2.0 主要更新：
 - 升级组件：codemirror版本由5.0.0升级到5.42.0
 - 修复：新的codemirror版本解决了在移动设备下每次输入文字都会换行的BUG
 - 优化：恢复上一次编辑内容弹窗的高度 随着设备适应
+- 改进：恢复上一次编辑内容弹窗、历史记录弹窗中的编辑内容加上emoji、todolist、tex、flowChart、sequenceDiagram的解析

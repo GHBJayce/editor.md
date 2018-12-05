@@ -131,13 +131,7 @@
                     backgroundColor : settings.dialogMaskBgColor
                 },
                 buttons    : {
-                    enter  : [lang.buttons.enter, function() {
-
-                        return false;
-                    }],
-
                     cancel : [lang.buttons.cancel, function() {
-
                         return false;
                     }]
                 }
@@ -150,6 +144,11 @@
                 domEle.text('');
                 editormd.markdownToHTML(domEle, {
                     markdown: domText,
+                    emoji: true,
+                    taskList: true,
+                    tex: true,
+                    flowChart: true,
+                    sequenceDiagram: true,
                 });
             });
 
