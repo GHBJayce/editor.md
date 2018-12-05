@@ -34,7 +34,7 @@
     #{$prefix}memory {
         &-list {
             list-style: none;
-            padding: 0 10px 0 0;
+            padding: 0 20px 0 0;
             max-height: 400px;
             overflow: auto;
         }
@@ -42,10 +42,13 @@
         &-item {
             overflow: hidden;
             margin-bottom: 15px;
+            #{$prefix}memory-content {
+                max-height: 200px;
+            }
         }
 
         &-content {
-            max-height: 100px;
+            max-height: 400px;
             overflow: auto;
             padding: 10px;
             border: 1px solid #ddd;

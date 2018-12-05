@@ -1858,7 +1858,8 @@
                 var localMemory = this.localGet(settings.memoryLocalKey);
                 if (localMemory && localMemory.data.length > 0) {
                     var data = localMemory.data[0];
-                    var content = '<div>检查到你在 <span class="' + this.classPrefix + 'memory-time">' + data.time.date + ' ' + data.time.time + '</span> 存在编辑内容，继续上一次编辑吗？<pre class="' + this.classPrefix + 'memory-content">' + this.html2Escape(data.content) + '</pre></div>';
+                    var memoryContentClass = this.classPrefix + 'memory-content';
+                    var content = '<div>检查到你在 <span class="' + this.classPrefix + 'memory-time">' + data.time.date + ' ' + data.time.time + '</span> 存在编辑内容，继续上一次编辑吗？<pre class="' + memoryContentClass + '">' + this.html2Escape(data.content) + '</pre></div>';
 
                     var dialog = this.createDialog({
                         title: '恢复历史编辑',
@@ -1875,6 +1876,12 @@
                         }
                     });
                     dialog.centerPosition();
+                    var domEle = $('.' + memoryContentClass);
+                    var domText = domEle.text();
+                    domEle.text('');
+                    editormd.markdownToHTML(domEle, {
+                        markdown: domText,
+                    });
                 }
             }
 
@@ -4061,7 +4068,19 @@
         
         editormd.$marked  = marked;
 
-        var div           = $("#" + id);
+        var div;
+        if (typeof id == 'string') {
+            if (id.indexOf('#') === -1) {
+                div = $("#" + id);
+                if (div.length == 0) {
+                    div = $(id);
+                }
+            } else {
+                div = $(id);
+            }
+        } else {
+            div = id;
+        }
         var settings      = div.settings = $.extend(true, defaults, options || {});
         var saveTo        = div.find("textarea");
         
@@ -4258,14 +4277,11 @@
         into       = into     || "head";
         callback   = callback || function() {};
 
-        console.log('loadCss fun: ', this);
-
         var _this = this;
         var css    = document.createElement("link");
         css.type   = "text/css";
         css.rel    = "stylesheet";
         css.onload = css.onreadystatechange = function() {
-            console.log('css onreadystatechange: ', event, css);
             _this.successHandle();
             callback();
         };
@@ -4273,7 +4289,6 @@
         css.href   = fileName + ".css";
 
         css.onerror = function () {
-            console.log('loadCss onerror: ', event);
             _this.errorHandle();
         };
 
@@ -4284,8 +4299,8 @@
                 }
                 editormd.loadFilesAbnormal.css[fileName]++;
                 editormd.loadAbnormal++;
-                console.log('loadCss errorhandle: ', editormd);
-                editormd.prototype.init(_this.id, _this.settings);
+                console.log('loadCss errorhandle: ', '_this：', _this, 'loadFilesAbnormal.css：', editormd.loadFilesAbnormal.css);
+                _this(_this.id, _this.settings);
             } else {
                 alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
             }
@@ -4327,11 +4342,10 @@
         script.id     = fileName.replace(/[\./]+/g, "-");
         script.type   = "text/javascript";
         script.src    = fileName + ".js";
-        console.log('loadScript fun: ', this);
+
         if (editormd.isIE8)
         {
             script.onreadystatechange = function() {
-                console.log('onreadystatechange: ', event, script.readyState);
                 if(script.readyState) 
                 {
                     if (script.readyState === "loaded" || script.readyState === "complete") 
@@ -4350,13 +4364,11 @@
         else
         {
             script.onload = function() {
-                console.log('loadScript onload: ', event);
                 _this.successHandle();
                 callback();
             };
 
             script.onerror = function () {
-                console.log('loadScript onerror: ', event);
                 _this.errorHandle();
             }
         }
@@ -4368,8 +4380,8 @@
                 }
                 editormd.loadFilesAbnormal.js[fileName]++;
                 editormd.loadAbnormal++;
-                console.log('loadScript errorhandle: ', editormd);
-                editormd.prototype.init(_this.id, _this.settings);
+                console.log('loadScript errorhandle: ', '_this：', _this, 'loadFilesAbormal.js：', editormd.loadFilesAbnormal.js);
+                editormd(_this.id, _this.settings);
             } else {
                 alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
             }

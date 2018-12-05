@@ -60,13 +60,18 @@
             var dialogLang  = lang.dialog.memory;
             var proto       = this.__proto__;
             var localMemory = proto.localGet(settings.memoryLocalKey);
-            var data        = localMemory.data;
+            var data;
+            var dataLength;
+
+            if (localMemory) {
+                data = localMemory.data;
+                dataLength = data.length;
+            }
 
             function loadData() {
                 var dialogHTML = initHtml = '<div class="'+ className +' text-center">暂无历史记录</div>';
 
-                if (localMemory && data.length > 0) {
-                    var dataLength = data.length;
+                if (localMemory && dataLength > 0) {
                     dialogHTML = '<div class="'+ className +'"><ul class="'+ prefix +'list">';
                     for (var i = 0; i < dataLength; i++) {
                         dialogHTML += '<li class="'+ prefix +'item">\
@@ -136,6 +141,16 @@
                         return false;
                     }]
                 }
+            });
+
+            $('.' + prefix + 'item').each(function (index, item) {
+                var domName = '.' + prefix + 'content';
+                var domEle = $(this).find(domName).first();
+                var domText = domEle.text();
+                domEle.text('');
+                editormd.markdownToHTML(domEle, {
+                    markdown: domText,
+                });
             });
 
             $('.'+ className).bind(exports.mouseOrTouch("click", "touchend"), operate);

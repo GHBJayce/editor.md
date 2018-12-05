@@ -28,7 +28,7 @@
 }
 .editormd .editormd-memory-list {
   list-style: none;
-  padding: 0 10px 0 0;
+  padding: 0 20px 0 0;
   max-height: 400px;
   overflow: auto;
 }
@@ -36,8 +36,11 @@
   overflow: hidden;
   margin-bottom: 15px;
 }
+.editormd .editormd-memory-item .editormd-memory-content {
+  max-height: 200px;
+}
 .editormd .editormd-memory-content {
-  max-height: 100px;
+  max-height: 400px;
   overflow: auto;
   padding: 10px;
   border: 1px solid #ddd;
