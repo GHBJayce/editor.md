@@ -1859,7 +1859,8 @@
                 if (localMemory && localMemory.data.length > 0) {
                     var data = localMemory.data[0];
                     var memoryContentClass = this.classPrefix + 'memory-content';
-                    var content = '<div>检查到你在 <span class="' + this.classPrefix + 'memory-time">' + data.time.date + ' ' + data.time.time + '</span> 存在编辑内容，继续上一次编辑吗？<pre class="' + memoryContentClass + '">' + this.html2Escape(data.content) + '</pre></div>';
+                    var memoryContentMaxHeight = $(window).height() / 3;
+                    var content = '<div>检查到你在 <span class="' + this.classPrefix + 'memory-time">' + data.time.date + ' ' + data.time.time + '</span> 存在编辑内容，继续上一次编辑吗？<pre class="' + memoryContentClass + '" style="max-height: ' + memoryContentMaxHeight +'px">' + this.html2Escape(data.content) + '</pre></div>';
 
                     var dialog = this.createDialog({
                         title: '恢复历史编辑',
