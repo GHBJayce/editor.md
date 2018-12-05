@@ -144,11 +144,11 @@
                 domEle.text('');
                 editormd.markdownToHTML(domEle, {
                     markdown: domText,
-                    emoji: true,
-                    taskList: true,
-                    tex: true,
-                    flowChart: true,
-                    sequenceDiagram: true,
+                    emoji: settings.emoji,
+                    taskList: settings.taskList,
+                    tex: settings.tex,
+                    flowChart: settings.flowChart,
+                    sequenceDiagram: settings.sequenceDiagram,
                 });
             });
 

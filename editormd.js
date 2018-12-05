@@ -1854,7 +1854,7 @@
             
             this.state.loaded = true;
 
-            if (settings.detectLastMemory) {
+            if (settings.detectLastMemory && !recreate) {
                 var localMemory = this.localGet(settings.memoryLocalKey);
                 if (localMemory && localMemory.data.length > 0) {
                     var data = localMemory.data[0];
@@ -1882,11 +1882,11 @@
                     domEle.text('');
                     editormd.markdownToHTML(domEle, {
                         markdown: domText,
-                        emoji: true,
-                        taskList: true,
-                        tex: true,
-                        flowChart: true,
-                        sequenceDiagram: true,
+                        emoji: settings.emoji,
+                        taskList: settings.taskList,
+                        tex: settings.tex,
+                        flowChart: settings.flowChart,
+                        sequenceDiagram: settings.sequenceDiagram,
                     });
                 }
             }
@@ -4012,7 +4012,7 @@
                             delete $attrs[i];
                         }
                     });
-                    
+
                     el.attr($attrs);
                     
                     var text = (typeof el[1] !== "undefined") ? $(el[1]).text() : "";
@@ -4306,7 +4306,7 @@
                 editormd.loadFilesAbnormal.css[fileName]++;
                 editormd.loadAbnormal++;
                 console.log('loadCss errorhandle: ', '_this：', _this, 'loadFilesAbnormal.css：', editormd.loadFilesAbnormal.css);
-                _this(_this.id, _this.settings);
+                _this.recreate();
             } else {
                 alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
             }
@@ -4387,7 +4387,7 @@
                 editormd.loadFilesAbnormal.js[fileName]++;
                 editormd.loadAbnormal++;
                 console.log('loadScript errorhandle: ', '_this：', _this, 'loadFilesAbormal.js：', editormd.loadFilesAbnormal.js);
-                editormd(_this.id, _this.settings);
+                _this.recreate();
             } else {
                 alert('尝试重新加载编辑器无效，请稍后刷新页面重试！');
             }

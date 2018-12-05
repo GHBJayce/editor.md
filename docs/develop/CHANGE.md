@@ -598,3 +598,6 @@ v1.2.0 主要更新：
 - 修复：新的codemirror版本解决了在移动设备下每次输入文字都会换行的BUG
 - 优化：恢复上一次编辑内容弹窗的高度 随着设备适应
 - 改进：恢复上一次编辑内容弹窗、历史记录弹窗中的编辑内容加上emoji、todolist、tex、flowChart、sequenceDiagram的解析
+- 改进：恢复上一次编辑内容弹窗、历史记录弹窗中的编辑内容根据当前配置来渲染
+- 修复：如果是从loadedDisplay进行recreate的，不会再次弹出恢复上一次编辑内容的弹窗
+- 修复：表情包链接 examples > emoji.html
